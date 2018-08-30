@@ -27,33 +27,33 @@ namespace cufhe {
 
 std::pair<void*, MemoryDeleter> AllocatorCPU::New(size_t nbytes) {
   void* ptr = nullptr;
-  CuSafeCall(cudaMallocHost(&ptr, nbytes));
+  CuSafeCall(hipMallocHost(&ptr, nbytes));
   return {ptr, Delete};
 }
 
-void AllocatorCPU::Delete(void* ptr) { CuSafeCall(cudaFreeHost(ptr)); }
+void AllocatorCPU::Delete(void* ptr) { CuSafeCall(hipFreeHost(ptr)); }
 
 MemoryDeleter AllocatorCPU::GetDeleter() { return Delete; }
 
 
 std::pair<void*, MemoryDeleter> AllocatorBoth::New(size_t nbytes) {
   void* ptr = nullptr;
-  CuSafeCall(cudaMallocManaged(&ptr, nbytes));
+  CuSafeCall(hipMalloc(&ptr, nbytes));
   return {ptr, Delete};
 }
 
-void AllocatorBoth::Delete(void* ptr) { CuSafeCall(cudaFree(ptr)); }
+void AllocatorBoth::Delete(void* ptr) { CuSafeCall(hipFree(ptr)); }
 
 MemoryDeleter AllocatorBoth::GetDeleter() { return Delete; }
 
 
 std::pair<void*, MemoryDeleter> AllocatorGPU::New(size_t nbytes) {
   void* ptr = nullptr;
-  CuSafeCall(cudaMalloc(&ptr, nbytes));
+  CuSafeCall(hipMalloc(&ptr, nbytes));
   return {ptr, Delete};
 }
 
-void AllocatorGPU::Delete(void* ptr) { CuSafeCall(cudaFree(ptr)); }
+void AllocatorGPU::Delete(void* ptr) { CuSafeCall(hipFree(ptr)); }
 
 MemoryDeleter AllocatorGPU::GetDeleter() { return Delete; }
 

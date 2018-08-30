@@ -24,6 +24,7 @@
 #include <include/details/error_gpu.cuh>
 #include <include/details/assert.h>
 #include <include/details/allocator_gpu.cuh>
+#include "hip/hcc_detail/device_functions.h"
 
 namespace cufhe {
 
@@ -65,14 +66,14 @@ void CuTwiddle<NEGATIVE_CYCLIC_CONVOLUTION>::Create(uint32_t size) {
   this->twd_sqrt_inv_ = this->twd_sqrt_ + 1024;
   __GenTwd__<<<1, dim3(8, 8, 2)>>>(this->twd_, this->twd_inv_);
   __GenTwdSqrt__<<<16, 64>>>(this->twd_sqrt_, this->twd_sqrt_inv_);
-  cudaDeviceSynchronize();
+  hipDeviceSynchronize();
   CuCheckError();
 }
 
 template <>
 void CuTwiddle<NEGATIVE_CYCLIC_CONVOLUTION>::Destroy() {
   assert(this->twd_ != nullptr);
-  CuSafeCall(cudaFree(this->twd_));
+  CuSafeCall(hipFree(this->twd_));
   this->twd_ = nullptr;
   this->twd_inv_ = nullptr;
   this->twd_sqrt_ = nullptr;

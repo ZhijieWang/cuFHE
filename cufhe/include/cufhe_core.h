@@ -21,6 +21,8 @@
  */
 
 #pragma once
+#include <hip/hip_runtime.h>
+
 
 #include "details/math.h"
 #include "details/assert.h"

@@ -28,7 +28,7 @@
 #include "ntt_1024_twiddle.cuh"
 #include <include/details/math.h>
 #include <include/details/error_gpu.cuh>
-
+#include "host_defines.h"
 namespace cufhe {
 
 template <uint32_t length = 1024,

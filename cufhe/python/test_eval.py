@@ -23,37 +23,50 @@
 import lib.fhe_cpu as fhe
 import random
 import operator
+import pdb, traceback, sys
+if __name__ == '__main__':
+    try:
+        do_work()
+    except:
+        type, value, tb = sys.exc_info()
+        traceback.print_exc()
+        last_frame = lambda tb=tb: last_frame(tb.tb_next) if tb.tb_next else tb
+        frame = last_frame().tb_frame
+        ns = dict(frame.f_globals)
+        ns.update(frame.f_locals)
+        code.interact(local=ns)
 
-def CheckResult(m, op, result):
-        return op(m[0], m[1]) == result
+def do_work():
+	def CheckResult(m, op, result):
+	        return op(m[0], m[1]) == result
 
 
-pubkey, prikey = fhe.KeyGen()
-m = [random.randint(0,1), random.randint(0,1)]
-c0, c1 = fhe.Encrypt(m[0], prikey), fhe.Encrypt(m[1], prikey)
+	pubkey, prikey = fhe.KeyGen()
+	m = [random.randint(0,1), random.randint(0,1)]
+	c0, c1 = fhe.Encrypt(m[0], prikey), fhe.Encrypt(m[1], prikey)
 
-# AND Gate
-c2 = c0 & c1
-result = c2.Decrypt(prikey)
-print("AND gate : " + str(CheckResult(m, operator.__and__, result)))
+	# AND Gate
+	c2 = c0 & c1
+	result = c2.Decrypt(prikey)
+	print("AND gate : " + str(CheckResult(m, operator.__and__, result)))
 
-# XOR Gate
-c3 = c0 ^ c1
-result = c3.Decrypt(prikey)
-print("XOR gate : " + str(CheckResult(m, operator.__xor__, result)))
+	# XOR Gate
+	c3 = c0 ^ c1
+	result = c3.Decrypt(prikey)
+	print("XOR gate : " + str(CheckResult(m, operator.__xor__, result)))
 
-# OR Gate
-c4 = c0 | c1
-result = c4.Decrypt(prikey)
-print("OR gate : " + str(CheckResult(m, operator.__or__, result)))
+	# OR Gate
+	c4 = c0 | c1
+	result = c4.Decrypt(prikey)
+	print("OR gate : " + str(CheckResult(m, operator.__or__, result)))
 
-# NOT Complement
-c5 = ~c0
-result = c5.Decrypt(prikey)
-print("NOT gate : " + str(result != m[0]))
+	# NOT Complement
+	c5 = ~c0
+	result = c5.Decrypt(prikey)
+	print("NOT gate : " + str(result != m[0]))
 
-# NAND Gate
-c6 = c0 & c1
-c7 = ~c6
-result = c7.Decrypt(prikey)
-print("NAND gate : " + str(not CheckResult(m, operator.__and__, result)))
+	# NAND Gate
+	c6 = c0 & c1
+	c7 = ~c6
+	result = c7.Decrypt(prikey)
+	print("NAND gate : " + str(not CheckResult(m, operator.__and__, result)))

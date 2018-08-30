@@ -24,14 +24,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <hip/hip_runtime_api.h>
 namespace cufhe {
 
 inline
-void CuSafeCall__(cudaError err, const char *file, const int line) {
-	if (cudaSuccess != err) {
+void CuSafeCall__(hipError_t err, const char *file, const int line) {
+	if (hipSuccess != err) {
 		fprintf( stderr, "CuSafeCall() failed at %s:%i : %s\n", file, line,
-				cudaGetErrorString(err));
+				hipGetErrorString(err));
 		exit(-1);
 	}
 	return;
@@ -39,10 +39,10 @@ void CuSafeCall__(cudaError err, const char *file, const int line) {
 
 inline
 void CuCheckError__(const char *file, const int line) {
-	cudaError err = cudaGetLastError();
-	if (cudaSuccess != err) {
+	hipError_t err = hipGetLastError();
+	if (hipSuccess != err) {
 		fprintf(stderr, "CuCheckError() failed at %s:%i : %s\n", file, line,
-				cudaGetErrorString(err));
+				hipGetErrorString(err));
 		exit(-1);
 	}
 	// More careful checking. However, this will affect performance.
@@ -50,9 +50,9 @@ void CuCheckError__(const char *file, const int line) {
 	//#define safer
 	#ifdef SAFER
 	err = cudaDeviceSynchronize();
-	if (cudaSuccess != err) {
+	if (hipSuccess != err) {
 		fprintf(stderr, "CuCheckError() with sync failed at %s:%i : %s\n", file,
-				line, cudaGetErrorString(err));
+				line, hipGetErrorString(err));
 		exit(-1);
 	}
 	#endif

@@ -21,6 +21,8 @@
  */
 
 #pragma once
+#include <hip/hip_runtime.h>
+
 
 #ifndef __host__
 #define __host__
