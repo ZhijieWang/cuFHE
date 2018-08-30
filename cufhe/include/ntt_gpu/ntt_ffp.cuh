@@ -23,8 +23,7 @@
 #pragma once
 
 #include <stdint.h>
-#include "hip/hcc_detail/host_defines.h"
-
+#include <hip/hcc_detail/host_defines.h>
 namespace cufhe {
 
 /**
@@ -60,8 +59,8 @@ private:
         "mov.b64          t, {m, 0};\n\t"
         "add.u64         %0, %0, t;\n\t"
         "}"
-        : "+r"(x)
-        : "r"(kModulus_)
+        : "+l"(x)
+        : "l"(kModulus_)
     );
   }
 
@@ -264,8 +263,8 @@ public:
         "mov.b64            t, {m, 0};\n\t"
         "add.u64            %0, %0, t;\n\t"
         "}"
-        : "+r"(val_)
-        : "r"(a.val_), "r"(b.val_), "r"(kModulus_));
+        : "+l"(val_)
+        : "l"(a.val_), "l"(b.val_), "l"(kModulus_));
   }
 
   /** Subtraction in FF(P): val_ = a + b mod P. */
@@ -282,8 +281,8 @@ public:
         "mov.b64            t, {m, 0};\n\t"
         "sub.u64            %0, %0, t;\n\t"
         "}"
-        : "+r"(r)
-        : "r"(a.val_), "r"(b.val_));
+        : "+l"(r)
+        : "l"(a.val_), "l"(b.val_));
     val_ = r;
   }
 
@@ -321,8 +320,8 @@ public:
         "addc.u32           r1, r1, 0;\n\t"
         "mov.b64            %0, {r0, r1};\n\t"
         "}"
-        : "+r"(val_)
-        : "r"(a.val_), "r"(b.val_));
+        : "+l"(val_)
+        : "l"(a.val_), "l"(b.val_));
     ModP(val_);
   }
 
@@ -383,8 +382,8 @@ public:
         "addc.u32       r1, r1, 0;\n\t"
         "mov.b64        %0, {r0, r1};\n\t"
         "}"
-        : "+r"(val_)
-        : "r"(l));
+        : "+l"(val_)
+        : "l"(l));
     // ret += (uint32_t)(-(ret >= FFP_MODULUS));
     ModP(val_);
   }
@@ -430,8 +429,8 @@ public:
         "addc.u32           r1, r1, 0;\n\t"
         "mov.b64            %0, {r0, r1};\n\t"
         "}"
-        : "+r"(val_)
-        : "r"(l));
+        : "+l"(val_)
+        : "l"(l));
     // ret += (uint32_t)(-(ret >= FFP_MODULUS));
     ModP(val_);
   }
@@ -468,8 +467,8 @@ public:
         "subc.u32       r1, r1, 0;\n\t"
         "mov.b64        %0, {r0, r1};\n\t"
         "}"
-        : "+r"(val_)
-        : "r"(l));
+        : "+l"(val_)
+        : "l"(l));
     // ret += (uint32_t)(-(ret >= FFP_MODULUS));
     ModP(val_);
     val_ = kModulus_ - val_;
@@ -507,8 +506,8 @@ public:
         "addc.u32       r1, r1, 0;\n\t"
         "mov.b64        %0, {r0, r1};\n\t"
         "}"
-        : "+r"(val_)
-        : "r"(l));
+        : "+l"(val_)
+        : "l"(l));
     // ret += (uint32_t)(-(ret >= FFP_MODULUS));
     ModP(val_);
     val_ = kModulus_ - val_;
@@ -555,8 +554,8 @@ public:
         "addc.u32           r1, r1, 0;\n\t"
         "mov.b64            %0, {r0, r1};\n\t"
         "}"
-        : "+r"(val_)
-        : "r"(l));
+        : "+l"(val_)
+        : "l"(l));
     // ret += (uint32_t)(-(ret >= FFP_MODULUS));
     ModP(val_);
     val_ = kModulus_ - val_;
@@ -594,8 +593,8 @@ public:
         "subc.u32       r1, r1, 0;\n\t"
         "mov.b64        %0, {r0, r1};\n\t"
         "}"
-        : "+r"(val_)
-        : "r"(l));
+        : "+l"(val_)
+        : "l"(l));
     // ret += (uint32_t)(-(ret >= FFP_MODULUS));
     ModP(val_);
   }

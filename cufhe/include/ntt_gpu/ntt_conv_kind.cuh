@@ -23,7 +23,6 @@
 #pragma once
 #include <hip/hip_runtime.h>
 
-
 #include <stdint.h>
 
 namespace cufhe {

@@ -62,8 +62,8 @@ void BootstrappingKeyToNTT(const BootstrappingKey* bk) {
   pair = AllocatorGPU::New(d_bk->SizeMalloc());
   d_bk->set_data((BootstrappingKey::PointerType)pair.first);
   MemoryDeleter d_bk_deleter = pair.second;
-  CuSafeCall(cudaMemcpy(d_bk->data(), bk->data(), d_bk->SizeMalloc(),
-                        cudaMemcpyHostToDevice));
+  CuSafeCall(hipMemcpy(d_bk->data(), bk->data(), d_bk->SizeMalloc(),
+                        hipMemcpyHostToDevice));
 
   Assert(bk_ntt == nullptr);
   bk_ntt = new BootstrappingKeyNTT(bk->n(), bk->k(), bk->l(), bk->w(), bk->t());
@@ -81,7 +81,7 @@ void BootstrappingKeyToNTT(const BootstrappingKey* bk) {
   dim3 grid(bk->k() + 1, (bk->k() + 1) * bk->l(), bk->t());
   dim3 block(128);
   __BootstrappingKeyToNTT__<<<grid, block>>>(*bk_ntt, *d_bk, *ntt_handler);
-  cudaDeviceSynchronize();
+  hipDeviceSynchronize();
   CuCheckError();
 
   d_bk_deleter(d_bk->data());
@@ -104,8 +104,8 @@ void KeySwitchingKeyToDevice(const KeySwitchingKey* ksk) {
   pair = AllocatorGPU::New(ksk_dev->SizeMalloc());
   ksk_dev->set_data((KeySwitchingKey::PointerType)pair.first);
   ksk_dev_deleter = pair.second;
-  CuSafeCall(cudaMemcpy(ksk_dev->data(), ksk->data(), ksk->SizeMalloc(),
-                        cudaMemcpyHostToDevice));
+  CuSafeCall(hipMemcpy(ksk_dev->data(), ksk->data(), ksk->SizeMalloc(),
+                        hipMemcpyHostToDevice));
 }
 
 void DeleteKeySwitchingKey() {

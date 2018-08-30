@@ -1,11 +1,12 @@
 ## Compilers
 CC = g++
-CU = hipcc
+CU = hipcc 
 ## Flags
-FLAGS = -std=c++11 -O3 -w -D__HIP_PLATFORM_HCC__=   -I/opt/rocm/include -I/opt/rocm/hcc/include
+FLAGS = -std=c++11 -O3 -w  -D__HIP_PLATFORM_NVCC__=  
 CU_FLAGS = #-gencode=arch=compute_70,code=sm_70 -gencode=arch=compute_70,code=compute_70
 ##-Wno-deprecated-gpu-targets
-INC = -I./ -I/opt/rocm/hip/include
+INC = -I./ -I/opt/rocm/hip/include -I/opt/rocm/include -I/opt/rocm/hcc/include -I/usr/local/cuda/include/
+ 
 ## Python header files
 PYTHON_VERSION = 2.7
 PYTHON_INCLUDE = /usr/include/python$(PYTHON_VERSION)

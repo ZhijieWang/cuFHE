@@ -24,12 +24,10 @@
 #include <include/details/error_gpu.cuh>
 #include <include/details/assert.h>
 #include <include/details/allocator_gpu.cuh>
-#include "hip/hcc_detail/device_functions.h"
 
 namespace cufhe {
 
-__global__
-void __GenTwd__(FFP* twd, FFP* twd_inv) {
+__global__ void GenTwd(FFP* twd, FFP* twd_inv) {
   uint32_t n = 1024;
   uint32_t idx;
   uint32_t cid;
@@ -46,8 +44,7 @@ void __GenTwd__(FFP* twd, FFP* twd_inv) {
   }
 }
 
-__global__
-void __GenTwdSqrt__(FFP* twd_sqrt, FFP* twd_sqrt_inv) {
+__global__ void GenTwdSqrt(FFP* twd_sqrt, FFP* twd_sqrt_inv) {
   uint32_t n = 1024;
   uint32_t idx = (uint32_t)blockIdx.x * blockDim.x + threadIdx.x;
   FFP w = FFP::Root(2 * n);
@@ -64,8 +61,8 @@ void CuTwiddle<NEGATIVE_CYCLIC_CONVOLUTION>::Create(uint32_t size) {
   this->twd_inv_ = this->twd_ + 1024;
   this->twd_sqrt_ = this->twd_inv_ + 1024;
   this->twd_sqrt_inv_ = this->twd_sqrt_ + 1024;
-  __GenTwd__<<<1, dim3(8, 8, 2)>>>(this->twd_, this->twd_inv_);
-  __GenTwdSqrt__<<<16, 64>>>(this->twd_sqrt_, this->twd_sqrt_inv_);
+  GenTwd<<<1, dim3(8, 8, 2)>>>(this->twd_, this->twd_inv_);
+  GenTwdSqrt<<<16, 64>>>(this->twd_sqrt_, this->twd_sqrt_inv_);
   hipDeviceSynchronize();
   CuCheckError();
 }
